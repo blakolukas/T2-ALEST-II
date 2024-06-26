@@ -3,19 +3,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 public class Digraph
 {
-    private Map<Vertex, List<Vertex>> graph;
+    protected static final String NEWLINE = System.getProperty("line.separator");
+    private Map<Vertex, LinkedList<Vertex>> graph;
 
     public Digraph(String file){
         graph = new HashMap<>();
@@ -23,49 +19,23 @@ public class Digraph
     }
 
     private void carrega(String file){
-        int values[]= new int[3];
         List<Vertex> vertices= new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while((line=reader.readLine()) != null){
-                int x=0;
-                int y=0;
-                int z=0;
-                int prev=0;
-
-                for(int i=0; i<line.length();i++){
-                    if(line.charAt(i)==' '){
-                        prev=i+1;
-                        values[0]=x;
-                        break;
-                    }
-                    x = x * 10 + Character.getNumericValue(line.charAt(i));
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length == 3) {
+                    int x = Integer.parseInt(parts[0]);
+                    int y = Integer.parseInt(parts[1]);
+                    int z = Integer.parseInt(parts[2]);
+                    Vertex vertex = new Vertex(x, y, z);
+                    System.out.println(vertex);
+                    vertices.add(vertex);
                 }
-
-                for(int i=prev; i<line.length();i++){
-                    if(line.charAt(i)==' '){
-                        prev=i+1;
-                        values[1]=y;
-                        break;
-                    }
-                    y = y * 10 + Character.getNumericValue(line.charAt(i));
-                }
-
-                for(int i=prev; i<line.length();i++){
-                    z = z * 10 + Character.getNumericValue(line.charAt(i));
-                    if(i==line.length()-1){
-                        values[2]=z;
-                        break;
-                    }
-                }
-                Arrays.sort(values);
-                Vertex vertice= new Vertex(values[0], values[1], values[2]);
-                System.out.println(vertice); 
-                vertices.add(vertice);
             }
             
             for (Vertex vertex : vertices) {
-                for(int i=0; i<vertices.size()-1;i++){
+                for(int i=0; i<vertices.size();i++){
                     if(vertex.compareTo(vertices.get(i))==-1){
                         addEdge(vertex, vertices.get(i));
                     }
@@ -87,8 +57,10 @@ public class Digraph
     }
 
     private void addToList(Vertex v, Vertex w) {
-        List<Vertex> list = graph.get(v);
-        if(list == null) list = new LinkedList<>();
+        LinkedList<Vertex> list = graph.get(v);
+        if(list == null){
+            list = new LinkedList<>();
+        }
         list.add(w);
         graph.put(v, list);
     }
@@ -102,5 +74,4 @@ public class Digraph
         return "Digraph [graph=" + graph + "]";
     }
 
-    
 }

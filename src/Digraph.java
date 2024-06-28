@@ -3,15 +3,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Digraph
 {
     protected static final String NEWLINE = System.getProperty("line.separator");
-    private Map<Vertex, LinkedList<Vertex>> graph;
+    private Map<Vertex, List<Vertex>> graph;
 
     public Digraph(String file){
         graph = new HashMap<>();
@@ -24,11 +28,16 @@ public class Digraph
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ");
+                int[] nums= new int[3];
                 if (parts.length == 3) {
                     int x = Integer.parseInt(parts[0]);
+                    nums[0]= x;
                     int y = Integer.parseInt(parts[1]);
+                    nums[1]= y;
                     int z = Integer.parseInt(parts[2]);
-                    Vertex vertex = new Vertex(x, y, z);
+                    nums[2]= z;
+                    Arrays.sort(nums);
+                    Vertex vertex = new Vertex(nums[2], nums[1], nums[0]);
                     System.out.println(vertex);
                     vertices.add(vertex);
                 }
@@ -43,9 +52,15 @@ public class Digraph
             }
             
             for (Vertex vertex : vertices) {
-                System.out.println("vertice: "+vertex+"\n\n"+getAdj(vertex)); 
+                System.out.println("\nvertice: "+vertex+"\n\n"+getAdj(vertex)+"\n\n-----------------------------------------"); 
             }
-        
+            System.out.println("digraph {");
+            System.out.println("rankdir = LR;");
+            System.out.println("node [shape = circle];");
+            for (Vertex vertex : vertices) {
+                System.out.println(toDot(vertex));
+            }
+            System.out.println("}");
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,7 +72,7 @@ public class Digraph
     }
 
     private void addToList(Vertex v, Vertex w) {
-        LinkedList<Vertex> list = graph.get(v);
+        List<Vertex> list = graph.get(v);
         if(list == null){
             list = new LinkedList<>();
         }
@@ -73,5 +88,23 @@ public class Digraph
     public String toString() {
         return "Digraph [graph=" + graph + "]";
     }
+
+    public String toDot(Vertex v) {
+		StringBuilder s = new StringBuilder();
+        if(graph.get(v)==null){
+            return "";
+        }
+		for (int i=0;i<graph.get(v).size();i++) {
+            Vertex w = graph.get(v).get(i);
+			s.append(v + " -> " + w + ";" + NEWLINE);
+		}
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i)=='[' || s.charAt(i)==']'){
+                s.deleteCharAt(i);
+                s.replace(i, i, "\"");
+            }
+        }
+		return s.toString();
+	}
 
 }

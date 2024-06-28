@@ -1,9 +1,0 @@
-se é pra comparar volume -> multiplica, compara
-se cada medida é importante -> criar uma classe com x,y,z
-
--------------------------------------------------------------------------------
-
-1- carregar os txt
-    - cada linha é um número, de String converte para int
-
-2- comparar com os demais vertices do gráfo

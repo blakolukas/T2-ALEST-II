@@ -18,8 +18,10 @@ public class Digraph
     private Map<Vertex, List<Vertex>> graph;
 
     public Digraph(String file){
+        long a= System.currentTimeMillis();
         graph = new HashMap<>();
         carrega(file);
+        System.out.println(System.currentTimeMillis()-a+"ms");
     }
 
     /*
@@ -34,6 +36,7 @@ public class Digraph
     */
     private void carrega(String file){
         List<Vertex> vertices= new ArrayList<>();
+        int entradas=0;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -50,6 +53,7 @@ public class Digraph
                     Vertex vertex = new Vertex(nums[2], nums[1], nums[0]); //adiciona em ordem crescente para ajudar a comparar
                     System.out.println(vertex);
                     vertices.add(vertex);
+                    entradas+=1;
                 }
             }
             
@@ -73,6 +77,7 @@ public class Digraph
                 System.out.println(toDot(vertex));
             }
             System.out.println("}");
+            System.out.println("entradas: "+entradas);
             
         } catch (IOException e) {
             e.printStackTrace();
